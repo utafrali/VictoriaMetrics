@@ -295,7 +295,7 @@ func (app *Vmselect) GraphiteMetricsIndex(t *testing.T, opts QueryOpts) Graphite
 	t.Helper()
 
 	seriesURL := fmt.Sprintf("http://%s/select/%s/graphite/metrics/index.json", app.httpListenAddr, opts.Tenant)
-	res, statusCode := app.cli.GetWithHeaders(t, seriesURL, opts.Headers)
+	res, statusCode := app.cli.Get(t, seriesURL, opts.Headers)
 	if statusCode != http.StatusOK {
 		t.Fatalf("unexpected status code: got %d, want %d, resp text=%q", statusCode, http.StatusOK, res)
 	}
@@ -343,7 +343,7 @@ func (app *Vmselect) APIV1AdminTenants(t *testing.T) *AdminTenantsResponse {
 	t.Helper()
 
 	tenantsURL := fmt.Sprintf("http://%s/admin/tenants", app.httpListenAddr)
-	res, statusCode := app.cli.Get(t, tenantsURL)
+	res, statusCode := app.cli.Get(t, tenantsURL, nil)
 	if statusCode != http.StatusOK {
 		t.Fatalf("unexpected status code: got %d, want %d, resp text=%q", statusCode, http.StatusOK, res)
 	}

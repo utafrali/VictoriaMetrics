@@ -82,7 +82,7 @@ func (app *Vmagent) APIV1ImportPrometheusNoWaitFlush(t *testing.T, records []str
 	data := []byte(strings.Join(records, "\n"))
 	headers := opts.getHeaders()
 	headers.Set("Content-Type", "text/plain")
-	_, statusCode := app.cli.PostWithHeaders(t, app.apiV1ImportPrometheusURL, data, headers)
+	_, statusCode := app.cli.Post(t, app.apiV1ImportPrometheusURL, data, headers)
 	if statusCode != http.StatusNoContent {
 		t.Fatalf("unexpected status code: got %d, want %d", statusCode, http.StatusNoContent)
 	}

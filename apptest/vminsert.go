@@ -117,7 +117,7 @@ func (app *Vminsert) InfluxWrite(t *testing.T, records []string, opts QueryOpts)
 	headers := opts.getHeaders()
 	headers.Set("Content-Type", "text/plain")
 	app.sendBlocking(t, len(records), func() {
-		_, statusCode := app.cli.PostWithHeaders(t, url, data, headers)
+		_, statusCode := app.cli.Post(t, url, data, headers)
 		if statusCode != http.StatusNoContent {
 			t.Fatalf("unexpected status code: got %d, want %d", statusCode, http.StatusNoContent)
 		}
@@ -151,7 +151,7 @@ func (app *Vminsert) PrometheusAPIV1ImportCSV(t *testing.T, records []string, op
 	headers := opts.getHeaders()
 	headers.Set("Content-Type", "text/plain")
 	app.sendBlocking(t, len(records), func() {
-		_, statusCode := app.cli.PostWithHeaders(t, url, data, headers)
+		_, statusCode := app.cli.Post(t, url, data, headers)
 		if statusCode != http.StatusNoContent {
 			t.Fatalf("unexpected status code: got %d, want %d", statusCode, http.StatusNoContent)
 		}
@@ -175,7 +175,7 @@ func (app *Vminsert) PrometheusAPIV1ImportNative(t *testing.T, data []byte, opts
 	headers := opts.getHeaders()
 	headers.Set("Content-Type", "text/plain")
 	app.sendBlocking(t, 1, func() {
-		_, statusCode := app.cli.PostWithHeaders(t, url, data, headers)
+		_, statusCode := app.cli.Post(t, url, data, headers)
 		if statusCode != http.StatusNoContent {
 			t.Fatalf("unexpected status code: got %d, want %d", statusCode, http.StatusNoContent)
 		}
@@ -200,7 +200,7 @@ func (app *Vminsert) OpenTSDBAPIPut(t *testing.T, records []string, opts QueryOp
 	headers := opts.getHeaders()
 	headers.Set("Content-Type", "application/json")
 	app.sendBlocking(t, len(records), func() {
-		_, statusCode := app.cli.PostWithHeaders(t, url, data, headers)
+		_, statusCode := app.cli.Post(t, url, data, headers)
 		if statusCode != http.StatusNoContent {
 			t.Fatalf("unexpected status code: got %d, want %d", statusCode, http.StatusNoContent)
 		}
@@ -222,7 +222,7 @@ func (app *Vminsert) PrometheusAPIV1Write(t *testing.T, wr prompb.WriteRequest, 
 	headers := opts.getHeaders()
 	headers.Set("Content-Type", "application/x-protobuf")
 	app.sendBlocking(t, recordsCount, func() {
-		_, statusCode := app.cli.PostWithHeaders(t, url, data, headers)
+		_, statusCode := app.cli.Post(t, url, data, headers)
 		if statusCode != http.StatusNoContent {
 			t.Fatalf("unexpected status code: got %d, want %d", statusCode, http.StatusNoContent)
 		}
@@ -274,7 +274,7 @@ func (app *Vminsert) PrometheusAPIV1ImportPrometheus(t *testing.T, records []str
 	headers := opts.getHeaders()
 	headers.Set("Content-Type", "text/plain")
 	app.sendBlocking(t, recordsCount, func() {
-		_, statusCode := app.cli.PostWithHeaders(t, url, data, headers)
+		_, statusCode := app.cli.Post(t, url, data, headers)
 		if statusCode != http.StatusNoContent {
 			t.Fatalf("unexpected status code: got %d, want %d", statusCode, http.StatusNoContent)
 		}
@@ -297,7 +297,7 @@ func (app *Vminsert) ZabbixConnectorHistory(t *testing.T, records []string, opts
 	headers := opts.getHeaders()
 	headers.Set("Content-Type", "application/json")
 	app.sendBlocking(t, len(records), func() {
-		_, statusCode := app.cli.PostWithHeaders(t, url, data, headers)
+		_, statusCode := app.cli.Post(t, url, data, headers)
 		if statusCode != http.StatusOK {
 			t.Fatalf("unexpected status code: got %d, want %d", statusCode, http.StatusOK)
 		}

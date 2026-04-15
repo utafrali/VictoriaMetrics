@@ -35,28 +35,14 @@ func (c *Client) CloseConnections() {
 
 // Get sends an HTTP GET request, returns
 // the response body and status code to the caller.
-func (c *Client) Get(t *testing.T, url string) (string, int) {
-	t.Helper()
-	return c.do(t, http.MethodGet, url, nil, nil)
-}
-
-// GetWithHeaders sends an HTTP GET request with attached getHeaders, returns
-// the response body and status code to the caller.
-func (c *Client) GetWithHeaders(t *testing.T, url string, headers http.Header) (string, int) {
+func (c *Client) Get(t *testing.T, url string, headers http.Header) (string, int) {
 	t.Helper()
 	return c.do(t, http.MethodGet, url, nil, headers)
 }
 
 // Post sends an HTTP POST request, returns
 // the response body and status code to the caller.
-func (c *Client) Post(t *testing.T, url string, data []byte) (string, int) {
-	t.Helper()
-	return c.do(t, http.MethodPost, url, data, nil)
-}
-
-// PostWithHeaders sends an HTTP POST request with attached getHeaders, returns
-// the response body and status code to the caller.
-func (c *Client) PostWithHeaders(t *testing.T, url string, data []byte, headers http.Header) (string, int) {
+func (c *Client) Post(t *testing.T, url string, data []byte, headers http.Header) (string, int) {
 	t.Helper()
 	return c.do(t, http.MethodPost, url, data, headers)
 }
@@ -69,7 +55,7 @@ func (c *Client) PostForm(t *testing.T, url string, data url.Values, headers htt
 		headers = make(http.Header)
 	}
 	headers.Set("Content-Type", "application/x-www-form-urlencoded")
-	return c.PostWithHeaders(t, url, []byte(data.Encode()), headers)
+	return c.Post(t, url, []byte(data.Encode()), headers)
 }
 
 // Delete sends an HTTP DELETE request and returns the response body and status code
@@ -151,7 +137,7 @@ func (app *ServesMetrics) GetIntMetric(t *testing.T, metricName string) int {
 func (app *ServesMetrics) GetMetric(t *testing.T, metricName string) float64 {
 	t.Helper()
 
-	metrics, statusCode := app.cli.Get(t, app.metricsURL)
+	metrics, statusCode := app.cli.Get(t, app.metricsURL, nil)
 	if statusCode != http.StatusOK {
 		t.Fatalf("unexpected status code: got %d, want %d", statusCode, http.StatusOK)
 	}
@@ -177,7 +163,7 @@ func (app *ServesMetrics) GetMetricsByPrefix(t *testing.T, prefix string) []floa
 
 	values := []float64{}
 
-	metrics, statusCode := app.cli.Get(t, app.metricsURL)
+	metrics, statusCode := app.cli.Get(t, app.metricsURL, nil)
 	if statusCode != http.StatusOK {
 		t.Fatalf("unexpected status code: got %d, want %d", statusCode, http.StatusOK)
 	}
@@ -206,7 +192,7 @@ func (app *ServesMetrics) GetMetricsByRegexp(t *testing.T, re *regexp.Regexp) []
 
 	values := []float64{}
 
-	metrics, statusCode := app.cli.Get(t, app.metricsURL)
+	metrics, statusCode := app.cli.Get(t, app.metricsURL, nil)
 	if statusCode != http.StatusOK {
 		t.Fatalf("unexpected status code: got %d, want %d", statusCode, http.StatusOK)
 	}
