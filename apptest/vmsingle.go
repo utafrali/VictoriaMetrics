@@ -266,7 +266,7 @@ func (app *Vmsingle) PrometheusAPIV1Export(t *testing.T, query string, opts Quer
 	values.Add("match[]", query)
 	values.Add("format", "promapi")
 
-	res, _ := app.cli.PostForm(t, app.prometheusAPIV1ExportURL, values, nil)
+	res, _ := app.cli.PostForm(t, app.prometheusAPIV1ExportURL, values, opts.Headers)
 	return NewPrometheusAPIV1QueryResponse(t, res)
 }
 
@@ -283,7 +283,7 @@ func (app *Vmsingle) PrometheusAPIV1ExportNative(t *testing.T, query string, opt
 	values.Add("match[]", query)
 	values.Add("format", "promapi")
 
-	res, _ := app.cli.PostForm(t, app.prometheusAPIV1ExportNativeURL, values, nil)
+	res, _ := app.cli.PostForm(t, app.prometheusAPIV1ExportNativeURL, values, opts.Headers)
 	return []byte(res)
 }
 
@@ -312,7 +312,7 @@ func (app *Vmsingle) PrometheusAPIV1QueryRange(t *testing.T, query string, opts 
 	values := opts.asURLValues()
 	values.Add("query", query)
 
-	res, _ := app.cli.PostForm(t, app.prometheusAPIV1QueryRangeURL, values, nil)
+	res, _ := app.cli.PostForm(t, app.prometheusAPIV1QueryRangeURL, values, opts.Headers)
 	return NewPrometheusAPIV1QueryResponse(t, res)
 }
 
@@ -326,7 +326,7 @@ func (app *Vmsingle) PrometheusAPIV1Series(t *testing.T, matchQuery string, opts
 	values := opts.asURLValues()
 	values.Add("match[]", matchQuery)
 
-	res, _ := app.cli.PostForm(t, app.prometheusAPIV1SeriesURL, values, nil)
+	res, _ := app.cli.PostForm(t, app.prometheusAPIV1SeriesURL, values, opts.Headers)
 	return NewPrometheusAPIV1SeriesResponse(t, res)
 }
 
@@ -340,7 +340,7 @@ func (app *Vmsingle) PrometheusAPIV1SeriesCount(t *testing.T, opts QueryOpts) *P
 	values := opts.asURLValues()
 
 	queryURL := fmt.Sprintf("http://%s/prometheus/api/v1/series/count", app.httpListenAddr)
-	res, _ := app.cli.PostForm(t, queryURL, values, nil)
+	res, _ := app.cli.PostForm(t, queryURL, values, opts.Headers)
 	return NewPrometheusAPIV1SeriesCountResponse(t, res)
 }
 
@@ -355,7 +355,7 @@ func (app *Vmsingle) PrometheusAPIV1Labels(t *testing.T, matchQuery string, opts
 	values.Add("match[]", matchQuery)
 
 	queryURL := fmt.Sprintf("http://%s/prometheus/api/v1/labels", app.httpListenAddr)
-	res, _ := app.cli.PostForm(t, queryURL, values, nil)
+	res, _ := app.cli.PostForm(t, queryURL, values, opts.Headers)
 	return NewPrometheusAPIV1LabelsResponse(t, res)
 }
 
@@ -370,7 +370,7 @@ func (app *Vmsingle) PrometheusAPIV1LabelValues(t *testing.T, labelName, matchQu
 	values.Add("match[]", matchQuery)
 
 	queryURL := fmt.Sprintf("http://%s/prometheus/api/v1/label/%s/values", app.httpListenAddr, labelName)
-	res, _ := app.cli.PostForm(t, queryURL, values, nil)
+	res, _ := app.cli.PostForm(t, queryURL, values, opts.Headers)
 	return NewPrometheusAPIV1LabelValuesResponse(t, res)
 }
 
@@ -384,7 +384,7 @@ func (app *Vmsingle) PrometheusAPIV1Metadata(t *testing.T, metric string, limit 
 	values.Add("limit", strconv.Itoa(limit))
 	queryURL := fmt.Sprintf("http://%s/prometheus/api/v1/metadata", app.httpListenAddr)
 
-	res, _ := app.cli.PostForm(t, queryURL, values, nil)
+	res, _ := app.cli.PostForm(t, queryURL, values, opts.Headers)
 	return NewPrometheusAPIV1Metadata(t, res)
 }
 
@@ -399,7 +399,7 @@ func (app *Vmsingle) APIV1AdminTSDBDeleteSeries(t *testing.T, matchQuery string,
 	values := opts.asURLValues()
 	values.Add("match[]", matchQuery)
 
-	res, statusCode := app.cli.PostForm(t, queryURL, values, nil)
+	res, statusCode := app.cli.PostForm(t, queryURL, values, opts.Headers)
 	if statusCode != http.StatusNoContent {
 		t.Fatalf("unexpected status code: got %d, want %d, resp text=%q", statusCode, http.StatusNoContent, res)
 	}
@@ -434,7 +434,7 @@ func (app *Vmsingle) GraphiteTagsTagSeries(t *testing.T, record string, opts Que
 	values := opts.asURLValues()
 	values.Add("path", record)
 
-	_, statusCode := app.cli.PostForm(t, url, values, nil)
+	_, statusCode := app.cli.PostForm(t, url, values, opts.Headers)
 	if got, want := statusCode, http.StatusNotImplemented; got != want {
 		t.Fatalf("unexpected status code: got %d, want %d", got, want)
 	}
@@ -449,7 +449,7 @@ func (app *Vmsingle) GraphiteTagsTagMultiSeries(t *testing.T, records []string, 
 		values.Add("path", rec)
 	}
 
-	_, statusCode := app.cli.PostForm(t, url, values, nil)
+	_, statusCode := app.cli.PostForm(t, url, values, opts.Headers)
 	if got, want := statusCode, http.StatusNotImplemented; got != want {
 		t.Fatalf("unexpected status code: got %d, want %d", got, want)
 	}
@@ -468,7 +468,7 @@ func (app *Vmsingle) APIV1StatusMetricNamesStats(t *testing.T, limit, le, matchP
 	values.Add("match_pattern", matchPattern)
 	queryURL := fmt.Sprintf("http://%s/api/v1/status/metric_names_stats", app.httpListenAddr)
 
-	res, statusCode := app.cli.PostForm(t, queryURL, values, nil)
+	res, statusCode := app.cli.PostForm(t, queryURL, values, opts.Headers)
 	if statusCode != http.StatusOK {
 		t.Fatalf("unexpected status code: got %d, want %d, resp text=%q", statusCode, http.StatusOK, res)
 	}
@@ -488,7 +488,7 @@ func (app *Vmsingle) APIV1AdminStatusMetricNamesStatsReset(t *testing.T, opts Qu
 	values := opts.asURLValues()
 	queryURL := fmt.Sprintf("http://%s/api/v1/admin/status/metric_names_stats/reset", app.httpListenAddr)
 
-	res, statusCode := app.cli.PostForm(t, queryURL, values, nil)
+	res, statusCode := app.cli.PostForm(t, queryURL, values, opts.Headers)
 	if statusCode != http.StatusNoContent {
 		t.Fatalf("unexpected status code: got %d, want %d, resp text=%q", statusCode, http.StatusNoContent, res)
 	}
@@ -625,7 +625,7 @@ func (app *Vmsingle) APIV1StatusTSDB(t *testing.T, matchQuery string, date strin
 	addNonEmpty("topN", topN)
 	addNonEmpty("date", date)
 
-	res, statusCode := app.cli.PostForm(t, seriesURL, values, nil)
+	res, statusCode := app.cli.PostForm(t, seriesURL, values, opts.Headers)
 	if statusCode != http.StatusOK {
 		t.Fatalf("unexpected status code: got %d, want %d, resp text=%q", statusCode, http.StatusOK, res)
 	}
