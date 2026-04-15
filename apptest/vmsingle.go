@@ -297,7 +297,7 @@ func (app *Vmsingle) PrometheusAPIV1Query(t *testing.T, query string, opts Query
 
 	values := opts.asURLValues()
 	values.Add("query", query)
-	res, _ := app.cli.PostForm(t, app.prometheusAPIV1QueryURL, values, nil)
+	res, _ := app.cli.PostForm(t, app.prometheusAPIV1QueryURL, values, opts.Headers)
 	return NewPrometheusAPIV1QueryResponse(t, res)
 }
 
