@@ -25,6 +25,8 @@ type Deduplicator struct {
 	interval      time.Duration
 	minDeadline   atomic.Int64
 
+	lcID uint64
+
 	wg     sync.WaitGroup
 	stopCh chan struct{}
 
@@ -50,6 +52,7 @@ func NewDeduplicator(pushFunc PushFunc, enableWindows bool, interval time.Durati
 		dropLabels:    dropLabels,
 		interval:      interval,
 		enableWindows: enableWindows,
+		lcID:          lc.Register(2 * interval),
 		stopCh:        make(chan struct{}),
 		ms:            metrics.NewSet(),
 	}
@@ -91,6 +94,8 @@ func NewDeduplicator(pushFunc PushFunc, enableWindows bool, interval time.Durati
 func (d *Deduplicator) MustStop() {
 	metrics.UnregisterSet(d.ms, true)
 	d.ms = nil
+
+	lc.Unregister(d.lcID)
 
 	close(d.stopCh)
 	d.wg.Wait()
