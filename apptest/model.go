@@ -95,7 +95,7 @@ type QueryOpts struct {
 
 func (qos *QueryOpts) getHeaders() http.Header {
 	if qos.Headers == nil {
-		return make(http.Header)
+		qos.Headers = make(http.Header)
 	}
 	return qos.Headers
 }
